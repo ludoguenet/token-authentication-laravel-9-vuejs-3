@@ -19631,6 +19631,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../axios */ "./resources/js/axios/index.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store */ "./resources/js/store/index.js");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Dashboard",
@@ -19641,7 +19643,13 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         return console.log(err);
       });
+    },
+    isAdmin: function isAdmin() {
+      return _store__WEBPACK_IMPORTED_MODULE_1__["default"].state.user.data.role;
     }
+  },
+  mounted: function mounted() {
+    _store__WEBPACK_IMPORTED_MODULE_1__["default"].dispatch('getRole');
   }
 });
 
@@ -19674,7 +19682,7 @@ __webpack_require__.r(__webpack_exports__);
         password: this.password
       }).then(function (res) {
         _store__WEBPACK_IMPORTED_MODULE_0__["default"].state.user.token = res.data.token;
-        console.log(_store__WEBPACK_IMPORTED_MODULE_0__["default"].state.user.token);
+        localStorage.setItem('auth_token', res.data.token);
       })["catch"](function (err) {
         return console.log(err);
       });
@@ -19700,10 +19708,12 @@ __webpack_require__.r(__webpack_exports__);
 
 var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Login");
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Dashboard", -1
-/* HOISTED */
-);
-
+var _hoisted_2 = {
+  key: 0
+};
+var _hoisted_3 = {
+  key: 1
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
@@ -19716,7 +19726,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
     /* STABLE */
 
-  }), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }), $options.isAdmin() ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h1", _hoisted_2, "Bienvenue Administrateur!")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h1", _hoisted_3, "Dashboard")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[0] || (_cache[0] = function () {
       return $options.getInformations && $options.getInformations.apply($options, arguments);
     })
@@ -19936,13 +19946,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../axios */ "./resources/js/axios/index.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 
-var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.createStore)({
+
+var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
   state: {
     user: {
-      data: {},
-      token: null
+      data: {
+        role: null
+      },
+      token: localStorage.getItem('auth_token')
+    }
+  },
+  actions: {
+    getRole: function getRole(_ref) {
+      var commit = _ref.commit;
+      _axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('getRole').then(function (res) {
+        commit('setRole', res.data.role);
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    }
+  },
+  mutations: {
+    setRole: function setRole(state, role) {
+      state.user.data.role = role;
     }
   }
 });

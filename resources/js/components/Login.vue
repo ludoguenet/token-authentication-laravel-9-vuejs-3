@@ -25,11 +25,11 @@ export default {
                 email: this.email,
                 password: this.password
             })
-                .then(res => {
-                    store.state.user.token = res.data.token;
-                    console.log(store.state.user.token);
-                })
-                .catch(err => console.log(err));
+            .then(res => {
+                store.state.user.token = res.data.token;
+                localStorage.setItem('auth_token', res.data.token);
+            })
+            .catch(err => console.log(err));
         }
     }
 }

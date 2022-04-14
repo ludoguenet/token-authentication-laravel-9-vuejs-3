@@ -18,9 +18,17 @@ use App\Http\Controllers\Auth\AuthController;
 Route::post('login', [AuthController::class, 'authenticate'])
     ->name('authenticate');
 
-Route::post('privateInformations', function () {
-    return response()->json([
-        'information' => 'Hello World!'
-    ]);
-})
-->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('privateInformations', function () {
+        return response()->json([
+            'information' => 'Hello World!'
+        ]);
+    });
+    
+    Route::get('getRole', function () {
+        return response()->json([
+            'role' => auth()->user()->is_admin
+        ]);
+    });
+});
+
